@@ -590,14 +590,14 @@ consumer.Generic = list({
 			exec(file, tokens, func, parent, functionalparent) {
 				let { token } = tokens.shift()
 				let condition = token.substring(token.indexOf('(') + 1, token.length - 1)
-				func.addCommand(`scoreboard players set #execute ${CONFIG.internalScoreboard} 0`)
+				func.addCommand(`scoreboard players set "#execute" ${CONFIG.internalScoreboard} 0`)
 				func.addCommand(
 					`execute ${condition} run ${consumer.Block(
 						file,
 						tokens,
 						'conditional',
 						{
-							append: [`scoreboard players set #execute ${CONFIG.internalScoreboard} 1`],
+							append: [`scoreboard players set "#execute" ${CONFIG.internalScoreboard} 1`],
 						},
 						parent,
 						functionalparent
@@ -614,7 +614,7 @@ consumer.Generic = list({
 							tokens,
 							'conditional',
 							{
-								append: [`scoreboard players set #execute ${CONFIG.internalScoreboard} 1`],
+								append: [`scoreboard players set "#execute" ${CONFIG.internalScoreboard} 1`],
 							},
 							parent,
 							functionalparent
@@ -624,7 +624,7 @@ consumer.Generic = list({
 				if (/^else/.test(tokens[0].token)) {
 					tokens.shift()
 					func.addCommand(
-						`execute if score #execute ${CONFIG.internalScoreboard} matches 0 run ${consumer.Block(
+						`execute if score "#execute" ${CONFIG.internalScoreboard} matches 0 run ${consumer.Block(
 							file,
 							tokens,
 							'conditional',
@@ -779,7 +779,7 @@ consumer.Generic = list({
 					tokens,
 					'until',
 					{
-						prepend: [`scoreboard players set #until_${_id} ${CONFIG.internalScoreboard} 1`],
+						prepend: [`scoreboard players set "#until_${_id}" ${CONFIG.internalScoreboard} 1`],
 					},
 					parent,
 					null
@@ -789,10 +789,10 @@ consumer.Generic = list({
 					CONFIG.generatedDirectory + '/until/' + (id.until = (id.until == undefined ? -1 : id.until) + 1)
 				untilFunc.namespace = namespaceStack[0]
 				untilFunc.setPath(namespaceStack.slice(1).concat(name).join('/'))
-				untilFunc.addCommand(`scoreboard players set #until_${_id} ${CONFIG.internalScoreboard} 0`)
+				untilFunc.addCommand(`scoreboard players set "#until_${_id}" ${CONFIG.internalScoreboard} 0`)
 				untilFunc.addCommand(`execute ${cond} run ${call}`)
 				untilFunc.addCommand(
-					`execute if score #until_${_id} ${CONFIG.internalScoreboard} matches 0 run schedule function $block ${time}`
+					`execute if score "#until_${_id}" ${CONFIG.internalScoreboard} matches 0 run schedule function $block ${time}`
 				)
 				untilFunc.confirm(file)
 				func.addCommand(`function ${untilFunc.getReference()}`)
@@ -818,21 +818,21 @@ consumer.Generic = list({
 					'while',
 					{
 						append: [
-							`scoreboard players set #WHILE_${_id} ${CONFIG.internalScoreboard} 1`,
+							`scoreboard players set "#WHILE_${_id}" ${CONFIG.internalScoreboard} 1`,
 							`schedule function ${whileFunc.getReference()} ${time}`,
 						],
 					},
 					parent,
 					func
 				)
-				whileFunc.addCommand(`scoreboard players set #WHILE_${_id} ${CONFIG.internalScoreboard} 0`)
+				whileFunc.addCommand(`scoreboard players set "#WHILE_${_id}" ${CONFIG.internalScoreboard} 0`)
 				whileFunc.addCommand(`execute ${cond} run ${whileAction}`)
 
 				if (/^finally$/.test(tokens[0].token)) {
 					token = tokens.shift().token
 					const whileFinally = consumer.Block(file, tokens, 'while', {}, whileFunc, func)
 					whileFunc.addCommand(
-						`execute if score #WHILE_${_id} ${CONFIG.internalScoreboard} matches 0 run ${whileFinally}`
+						`execute if score "#WHILE_${_id}" ${CONFIG.internalScoreboard} matches 0 run ${whileFinally}`
 					)
 				}
 
@@ -859,21 +859,21 @@ consumer.Generic = list({
 					'while',
 					{
 						append: [
-							`scoreboard players set #WHILE_${_id} ${CONFIG.internalScoreboard} 1`,
+							`scoreboard players set "#WHILE_${_id}" ${CONFIG.internalScoreboard} 1`,
 							`function ${whileFunc.getReference()}`,
 						],
 					},
 					parent,
 					func
 				)
-				whileFunc.addCommand(`scoreboard players set #WHILE_${_id} ${CONFIG.internalScoreboard} 0`)
+				whileFunc.addCommand(`scoreboard players set "#WHILE_${_id}" ${CONFIG.internalScoreboard} 0`)
 				whileFunc.addCommand(`execute ${cond} run ${whileAction}`)
 
 				if (/^finally$/.test(tokens[0].token)) {
 					token = tokens.shift().token
 					const whileFinally = consumer.Block(file, tokens, 'while', {}, whileFunc, func)
 					whileFunc.addCommand(
-						`execute if score #WHILE_${_id} ${CONFIG.internalScoreboard} matches 0 run ${whileFinally}`
+						`execute if score "#WHILE_${_id}" ${CONFIG.internalScoreboard} matches 0 run ${whileFinally}`
 					)
 				}
 
