@@ -84,12 +84,12 @@ class MultiFileTag {
 }
 const tickFile = new File()
 tickFile.setPath(
-	path.resolve(process.cwd(), './data/minecraft/functions/' + CONFIG.generatedDirectory + '/events/tick.mcfunction')
+	path.resolve(process.cwd(), './addon/functions/' + CONFIG.generatedDirectory + '/events/tick.mcfunction')
 )
 const tickFunction = new MultiFile(tickFile)
 const loadFile = new File()
 loadFile.setPath(
-	path.resolve(process.cwd(), './data/minecraft/functions/' + CONFIG.generatedDirectory + '/events/load.mcfunction')
+	path.resolve(process.cwd(), './addon/functions/' + CONFIG.generatedDirectory + '/events/load.mcfunction')
 )
 const loadFunction = new MultiFile(loadFile)
 
@@ -115,7 +115,7 @@ class MCFunction extends File {
 		this._path = p
 	}
 	getReference() {
-		return this.namespace + ':' + this._path
+		return this.namespace + '/' + this._path
 	}
 	getContents() {
 		return (
@@ -123,7 +123,7 @@ class MCFunction extends File {
 			this.functions
 				.map(command =>
 					command
-						.replace(/\$block/g, this.namespace + ':' + this.getFunctionPath())
+						.replace(/\$block/g, this.namespace + '/' + this.getFunctionPath())
 						.replace(/\$top/g, this.top.getReference())
 						.replace(/\$parent/g, () => {
 							if (this.parent) {
@@ -137,7 +137,7 @@ class MCFunction extends File {
 		)
 	}
 	getPath() {
-		return path.resolve(process.cwd(), './data/', this.namespace, './functions/', this._path + '.mcfunction')
+		return path.resolve(process.cwd(), './addon/functions/', this.namespace, this._path + '.mcfunction')
 	}
 	getFunctionPath() {
 		return this._path
@@ -155,7 +155,7 @@ class MCFunction extends File {
 		}
 	}
 	toString() {
-		return 'function ' + this.namespace + ':' + this.getFunctionPath()
+		return 'function ' + this.namespace + '/' + this.getFunctionPath()
 	}
 
 	static setEnv(_env) {

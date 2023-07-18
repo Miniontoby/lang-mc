@@ -18,7 +18,7 @@ module.exports = context => {
 		.filter(name => name.endsWith('.json'))
 		.map(name => ({
 			name: lib_name + '/' + name,
-			content: files[name].replace(new RegExp('lib:', 'g'), `lib:${lib_name}/`),
+			content: files[name].replace(new RegExp('lib:', 'g'), `lib/${lib_name}/`),
 		}))
 	const file_from_func = {}
 	let transforms = {}
@@ -27,11 +27,11 @@ module.exports = context => {
 	for (let func of keys) {
 		if (func.endsWith('.mcfunction')) {
 			const [, , , ...rest] = func.split('/')
-			const new_name = `data/lib/functions/${lib_name}/${rest.join('/')}`
+			const new_name = `functions/lib/${lib_name}/${rest.join('/')}`
 			file_from_func[`lib:${lib_name}/${rest.join('/').replace('.mcfunction', '')}`] = new_name
 			files[new_name] = files[func]
 			delete files[func]
-			functions.push(`lib:${lib_name}/${rest.join('/').replace('.mcfunction', '')}`)
+			functions.push(`lib/${lib_name}/${rest.join('/').replace('.mcfunction', '')}`)
 		} else if (func.endsWith('.json')) {
 			files[lib_name + '/' + func] = files[func]
 			delete files[func]
@@ -39,7 +39,7 @@ module.exports = context => {
 	}
 	const target = new RegExp('lib:', 'g')
 	for (const name in files) {
-		files[name] = files[name].replace(target, `lib:${lib_name}/`)
+		files[name] = files[name].replace(target, `lib/${lib_name}/`)
 	}
 	const dependencies = {}
 	function getDeps(content) {

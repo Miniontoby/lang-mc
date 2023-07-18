@@ -181,7 +181,7 @@ function includeFileList(list, file) {
 				}
 				function toFunction(str) {
 					const [, name, , ...rest] = str.replace('.mcfunction', '').split(/\/|\\/)
-					return `${name}:${rest.join('/')}`
+					return `${name}/${rest.join('/')}`
 				}
 				if (item.endsWith('tick.mcfunction')) {
 					tickFunction.set(file, toFunction(item))
@@ -1184,8 +1184,8 @@ function copy_token(_, args) {
 	t.dependencies = _.dependencies
 	return t
 }
-const TickTag = new io.MultiFileTag(path.resolve(process.cwd(), './data/minecraft/tags/functions/tick.json'))
-const LoadTag = new io.MultiFileTag(path.resolve(process.cwd(), './data/minecraft/tags/functions/load.json'))
+const TickTag = new io.MultiFileTag(path.resolve(process.cwd(), './addon/functions/tick.json'))
+const LoadTag = new io.MultiFileTag(path.resolve(process.cwd(), './addon/functions/load.json'))
 function MC_LANG_HANDLER(file) {
 	MC_LANG_EVENTS.emit('start', {
 		file,
