@@ -5,7 +5,7 @@ const logger = require('!logger')
 const CompilerError = require('!errors/CompilerError')
 const UserError = require('!errors/UserError')
 const File = require('!io/File')
-const { MCFunction, loadFunction, tickFunction, evaluate_str } = require('./io')
+const { MCFunction, loadFunction, tickFunction, evaluate_str, mcmetaToManifest } = require('./io')
 const { evaluateCodeWithEnv, bindCodeToEnv } = require('./code-runner')
 const { EventEmitter } = require('events')
 const io = require('./io')
@@ -1186,7 +1186,13 @@ function copy_token(_, args) {
 }
 const TickTag = new io.MultiFileTag(path.resolve(process.cwd(), './addon/functions/tick.json'))
 const LoadTag = new io.MultiFileTag(path.resolve(process.cwd(), './addon/functions/load.json'))
+let first = true;
 function MC_LANG_HANDLER(file) {
+	if (first) {
+		mcmetaToManifest(path.resolve(process.cwd(), './pack.mcmeta'), path.resolve(process.cwd(), './addon/manifest.json'), logger);
+		first = false;
+	}
+
 	MC_LANG_EVENTS.emit('start', {
 		file,
 	})
@@ -1271,6 +1277,10 @@ function MC_LANG_HANDLER(file) {
 }
 
 function MCM_LANG_HANDLER(file) {
+	if (first) {
+		mcmetaToManifest(path.resolve(process.cwd(), './pack.mcmeta'), path.resolve(process.cwd(), './addon/manifest.json'), logger);
+		first = false;
+	}
 	resetScoreIdsForFile(file)
 	const toUpdate = (MacroCache[file] && MacroCache[file].dependents) || []
 	MacroCache[file] = null
@@ -1328,6 +1338,7 @@ module.exports = function MC(registry) {
 				TickTag,
 				LoadTag,
 				MCFunction,
+				mcmetaToManifest,
 			},
 			getEnv() {
 				return env
